@@ -120,7 +120,7 @@ button{
 
 <textarea id="text" placeholder="اكتب سؤالك هنا..."></textarea>
 
-<button onclick="solve()">🚀 حل بالذكاء الاصطناعي</button>
+<button onclick="solve()">🚀 إرسال للسيرفر</button>
 
 <div class="result" id="result">النتيجة ستظهر هنا...</div>
 
@@ -128,9 +128,9 @@ button{
 
 <script>
 
-// 🔴 حط رابط Railway هنا
+// 🔥 رابط Railway بتاعك
 
-const API_URL = "https://YOUR-RAILWAY-APP.up.railway.app/chat";
+const API_URL = "https://teacherai-production.up.railway.app/chat";
 
 async function solve() {
 
@@ -146,7 +146,7 @@ async function solve() {
 
   }
 
-  result.innerText = "⏳ جاري التفكير...";
+  result.innerText = "⏳ جاري الإرسال...";
 
   try {
 
