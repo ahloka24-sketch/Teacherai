@@ -4,111 +4,149 @@
 
 <head>
 
-<meta charset="UTF-8">
+  <meta charset="UTF-8" />
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<title>المعلم الذكي</title>
+  <title>المعلم الذكي</title>
 
-<style>
+  <style>
 
-body{
+    body{
 
-  margin:0;
+      margin:0;
 
-  font-family: Arial;
+      font-family:Arial;
 
-  background:#0b1220;
+      background:#0b1220;
 
-  color:white;
+      color:white;
 
-  padding:15px;
+      padding:15px;
 
-}
+    }
 
-.container{
+    .container{
 
-  max-width:600px;
+      max-width:650px;
 
-  margin:auto;
+      margin:auto;
 
-  background:#111a2e;
+      background:#111a2e;
 
-  padding:20px;
+      padding:20px;
 
-  border-radius:18px;
+      border-radius:18px;
 
-}
+    }
 
-h1{
+    h1{
 
-  text-align:center;
+      text-align:center;
 
-  color:#38bdf8;
+      color:#38bdf8;
 
-}
+    }
 
-textarea{
+    textarea{
 
-  width:100%;
+      width:100%;
 
-  margin-top:10px;
+      margin-top:10px;
 
-  padding:12px;
+      padding:12px;
 
-  border-radius:10px;
+      border-radius:10px;
 
-  border:1px solid #334155;
+      border:1px solid #334155;
 
-  background:#1e293b;
+      background:#1e293b;
 
-  color:white;
+      color:white;
 
-  height:100px;
+      height:100px;
 
-  resize:none;
+      resize:none;
 
-}
+    }
 
-button{
+    input[type="file"]{
 
-  width:100%;
+      width:100%;
 
-  margin-top:12px;
+      margin-top:12px;
 
-  padding:14px;
+      padding:10px;
 
-  background:#22c55e;
+      border-radius:10px;
 
-  border:none;
+      background:#1e293b;
 
-  border-radius:10px;
+      color:white;
 
-  color:white;
+      border:1px solid #334155;
 
-  font-size:16px;
+    }
 
-  cursor:pointer;
+    button{
 
-}
+      width:100%;
 
-.result{
+      margin-top:12px;
 
-  margin-top:20px;
+      padding:14px;
 
-  background:#0f172a;
+      background:#22c55e;
 
-  padding:15px;
+      border:none;
 
-  border-radius:12px;
+      border-radius:10px;
 
-  white-space:pre-wrap;
+      color:white;
 
-  border-right:4px solid #38bdf8;
+      font-size:16px;
 
-}
+      cursor:pointer;
 
-</style>
+    }
+
+    .result{
+
+      margin-top:20px;
+
+      background:#0f172a;
+
+      padding:15px;
+
+      border-radius:12px;
+
+      white-space:pre-wrap;
+
+      border-right:4px solid #38bdf8;
+
+    }
+
+    .preview{
+
+      margin-top:12px;
+
+      text-align:center;
+
+    }
+
+    .preview img{
+
+      max-width:100%;
+
+      border-radius:12px;
+
+      display:none;
+
+      border:1px solid #334155;
+
+    }
+
+  </style>
 
 </head>
 
@@ -116,37 +154,71 @@ button{
 
 <div class="container">
 
-<h1>📚 المعلم الذكي</h1>
+  <h1>📚 المعلم الذكي</h1>
 
-<textarea id="text" placeholder="اكتب سؤالك هنا..."></textarea>
+  <textarea id="text" placeholder="اكتب سؤالك هنا..."></textarea>
 
-<button onclick="solve()">🚀 إرسال للسيرفر</button>
+  <input type="file" id="imageInput" accept="image/*" />
 
-<div class="result" id="result">النتيجة ستظهر هنا...</div>
+  <div class="preview">
+
+    <img id="preview" alt="preview">
+
+  </div>
+
+  <button onclick="solve()">🚀 حل بالذكاء الاصطناعي</button>
+
+  <div class="result" id="result">النتيجة ستظهر هنا...</div>
 
 </div>
 
 <script>
 
-// 🔥 رابط Railway بتاعك
-
 const API_URL = "https://teacherai-production.up.railway.app/chat";
+
+const imageInput = document.getElementById("imageInput");
+
+const preview = document.getElementById("preview");
+
+let imageBase64 = "";
+
+imageInput.addEventListener("change", function () {
+
+  const file = this.files[0];
+
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function (e) {
+
+    imageBase64 = e.target.result;
+
+    preview.src = imageBase64;
+
+    preview.style.display = "block";
+
+  };
+
+  reader.readAsDataURL(file);
+
+});
 
 async function solve() {
 
-  const text = document.getElementById("text").value;
+  const text = document.getElementById("text").value.trim();
 
   const result = document.getElementById("result");
 
-  if (!text) {
+  if (!text && !imageBase64) {
 
-    result.innerText = "اكتب سؤال أولاً";
+    result.innerText = "اكتب سؤالًا أو ارفع صورة أولاً";
 
     return;
 
   }
 
-  result.innerText = "⏳ جاري الإرسال...";
+  result.innerText = "⏳ جاري التحليل...";
 
   try {
 
@@ -162,7 +234,9 @@ async function solve() {
 
       body: JSON.stringify({
 
-        prompt: text
+        prompt: text,
+
+        image: imageBase64
 
       })
 
