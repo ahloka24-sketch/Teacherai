@@ -126,17 +126,15 @@ button{
 
 <script>
 
-// 🔥 رابط الـ Cloudflare Worker
+const WORKER_URL = "https://teacherai.ahloka24.workers.dev";
 
-const WORKER_URL = "https://teacherai.lohomy2.workers.dev";
-
-async function solve(){
+async function solve() {
 
   const text = document.getElementById("text").value;
 
   const result = document.getElementById("result");
 
-  if(!text){
+  if (!text) {
 
     result.innerText = "اكتب سؤال أولاً";
 
@@ -146,7 +144,7 @@ async function solve(){
 
   result.innerText = "⏳ جاري التفكير...";
 
-  try{
+  try {
 
     const response = await fetch(WORKER_URL, {
 
@@ -166,6 +164,12 @@ async function solve(){
 
     });
 
+    if (!response.ok) {
+
+      throw new Error("HTTP Error: " + response.status);
+
+    }
+
     const data = await response.json();
 
     result.innerText =
@@ -176,9 +180,9 @@ async function solve(){
 
       "لم يتم الحصول على رد";
 
-  }catch(err){
+  } catch (err) {
 
-    result.innerText = "خطأ: " + err.message;
+    result.innerText = "❌ فشل الاتصال: " + err.message;
 
   }
 
