@@ -88,8 +88,6 @@ button{
 
   font-size:16px;
 
-  cursor:pointer;
-
 }
 
 .result{
@@ -118,9 +116,9 @@ button{
 
 <h1>📚 المعلم الذكي</h1>
 
-<textarea id="text" placeholder="اكتب سؤالك..."></textarea>
+<textarea id="text" placeholder="اكتب سؤالك هنا..."></textarea>
 
-<button onclick="ask()">🚀 إرسال</button>
+<button onclick="solve()">🚀 حل بالذكاء الاصطناعي</button>
 
 <div class="result" id="result">النتيجة ستظهر هنا...</div>
 
@@ -128,11 +126,11 @@ button{
 
 <script>
 
-// 🔥 حط رابط الـ Worker هنا
+// 🔑 حط API Key هنا
 
-const WORKER_URL = "https://teacherai.lohomy2.workers.dev";
+const API_KEY = env.GEMINI_API_KEY;
 
-async function ask(){
+async function solve(){
 
   const text = document.getElementById("text").value;
 
@@ -146,31 +144,57 @@ async function ask(){
 
   }
 
-  result.innerText = "⏳ جاري الرد...";
+  result.innerText = "⏳ جاري التفكير...";
 
   try{
 
-    const res = await fetch(WORKER_URL, {
+    const response = await fetch(
 
-      method: "POST",
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
 
-      headers: {
+      {
 
-        "Content-Type": "application/json"
+        method: "POST",
 
-      },
+        headers: {
 
-      body: JSON.stringify({
+          "Content-Type": "application/json"
 
-        prompt: text
+        },
 
-      })
+        body: JSON.stringify({
 
-    });
+          contents: [
 
-    const data = await res.json();
+            {
 
-    result.innerText = data.text || data.error || "لا يوجد رد";
+              parts: [
+
+                { text: "أنت معلم ذكي، حل السؤال التالي خطوة خطوة: " + text }
+
+              ]
+
+            }
+
+          ]
+
+        })
+
+      }
+
+    );
+
+    const data = await response.json();
+
+    const answer =
+
+      data?.candidates?.[0]?.content?.parts?.[0]?.text
+
+      || data?.error?.message
+
+      || "لم يتم الحصول على رد";
+
+    result.innerText = answer;
 
   }catch(err){
 
