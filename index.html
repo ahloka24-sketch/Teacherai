@@ -126,7 +126,7 @@ button{
 
 <script>
 
-// 🔑 حط API Key هنا
+// 🔥 رابط الـ Cloudflare Worker
 
 const WORKER_URL = "https://teacherai.lohomy2.workers.dev";
 
@@ -148,53 +148,33 @@ async function solve(){
 
   try{
 
-    const response = await fetch(
+    const response = await fetch(WORKER_URL, {
 
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
+      method: "POST",
 
-      {
+      headers: {
 
-        method: "POST",
+        "Content-Type": "application/json"
 
-        headers: {
+      },
 
-          "Content-Type": "application/json"
+      body: JSON.stringify({
 
-        },
+        prompt: text
 
-        body: JSON.stringify({
+      })
 
-          contents: [
-
-            {
-
-              parts: [
-
-                { text: "أنت معلم ذكي، حل السؤال التالي خطوة خطوة: " + text }
-
-              ]
-
-            }
-
-          ]
-
-        })
-
-      }
-
-    );
+    });
 
     const data = await response.json();
 
-    const answer =
+    result.innerText =
 
-      data?.candidates?.[0]?.content?.parts?.[0]?.text
+      data.text ||
 
-      || data?.error?.message
+      data.error ||
 
-      || "لم يتم الحصول على رد";
-
-    result.innerText = answer;
+      "لم يتم الحصول على رد";
 
   }catch(err){
 
