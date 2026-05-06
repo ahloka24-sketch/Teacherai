@@ -1,14 +1,29 @@
-import { GoogleGenAI } from "@google/genai";
+import express from "express";
 
-// The client gets the API key from the environment variable `GEMINI_API_KEY`.
-const ai = new GoogleGenAI({});
+import cors from "cors";
 
-async function main() {
-  const response = await ai.models.generateContent({
-    model: "gemini-3-flash-preview",
-    contents: "Explain how AI works in a few words",
-  });
-  console.log(response.text);
-}
+const app = express();
 
-main();
+app.use(cors());
+
+app.use(express.json());
+
+app.get("/", (req, res) => {
+
+  res.send("Server is alive ✔");
+
+});
+
+app.post("/chat", (req, res) => {
+
+  res.json({ text: "OK WORKING" });
+
+});
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+
+  console.log("Server running ✔");
+
+});
