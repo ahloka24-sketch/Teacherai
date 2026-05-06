@@ -68,8 +68,6 @@ textarea{
 
   resize:none;
 
-  font-size:16px;
-
 }
 
 button{
@@ -94,12 +92,6 @@ button{
 
 }
 
-button:active{
-
-  transform:scale(0.98);
-
-}
-
 .result{
 
   margin-top:20px;
@@ -114,8 +106,6 @@ button:active{
 
   border-right:4px solid #38bdf8;
 
-  min-height:50px;
-
 }
 
 </style>
@@ -128,7 +118,7 @@ button:active{
 
 <h1>📚 المعلم الذكي</h1>
 
-<textarea id="text" placeholder="اكتب سؤالك هنا..."></textarea>
+<textarea id="text" placeholder="اكتب سؤالك..."></textarea>
 
 <button onclick="ask()">🚀 إرسال</button>
 
@@ -138,7 +128,7 @@ button:active{
 
 <script>
 
-// 🔥 رابط الـ Cloudflare Worker
+// 🔥 حط رابط الـ Worker هنا
 
 const WORKER_URL = "https://teacherai.lohomy2.workers.dev";
 
@@ -150,17 +140,17 @@ async function ask(){
 
   if(!text){
 
-    result.innerText = "❗ اكتب سؤال أولاً";
+    result.innerText = "اكتب سؤال أولاً";
 
     return;
 
   }
 
-  result.innerText = "⏳ جاري التفكير...";
+  result.innerText = "⏳ جاري الرد...";
 
   try{
 
-    const response = await fetch(WORKER_URL, {
+    const res = await fetch(WORKER_URL, {
 
       method: "POST",
 
@@ -178,7 +168,7 @@ async function ask(){
 
     });
 
-    const data = await response.json();
+    const data = await res.json();
 
     result.innerText = data.text || data.error || "لا يوجد رد";
 
